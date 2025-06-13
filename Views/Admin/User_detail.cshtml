@@ -1,0 +1,50 @@
+﻿@model List<Onlinemovietickitproject.Models.User>
+
+@{
+    ViewBag.Title = "User Management";
+    Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Admincss/Userstyle.css">
+
+<div class="user-management-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">User List</h2>
+       
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">ID</th>
+                    <th style="width: 20%;">Name</th>
+                    <th style="width: 25%;">Email</th>
+                    <th style="width: 20%;">Phone</th>
+                   
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.UserID</td>
+                            <td>@user.Username</td>
+                            <td>@user.Email</td>
+                            <td>@user.PhoneNumber</td>
+                           
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center">No users found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

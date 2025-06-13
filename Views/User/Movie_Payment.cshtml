@@ -1,0 +1,142 @@
+﻿@model Onlinemovietickitproject.Models.PaymentViewModel
+
+@{
+    ViewBag.Title = "Payment Page";
+}
+
+<link href="~/Css/Moviepaymentshit.css" rel="stylesheet" />
+
+<h2>Payment Summary</h2>
+
+<div class="card p-4 mb-4 shadow">
+    <h4>Booking Details</h4>
+    <p><strong>Movie:</strong> @Model.MovieTitle</p>
+    <p><strong>Theater:</strong> @Model.TheaterName</p>
+
+    <h5>Seats:</h5>
+    <ul>
+        @for (int i = 0; i < Model.SelectedSeats.Count; i++)
+        {
+            <li>@Model.SelectedSeats[i] - @(Model.IsVip[i] ? "VIP" : "Standard")</li>
+        }
+    </ul>
+
+    <p><strong>Total Tickets:</strong> @Model.SelectedSeats.Count</p>
+    <p><strong>Show Time:</strong> @Model.StartTime.ToString("f")</p>
+    <p><strong>Standard Seat Price:</strong> ₹@Model.TotalAmount</p>
+    <p><strong>Convenience Fee:</strong> ₹@Model.ConvenienceFee</p>
+    <p><strong>Tax:</strong> ₹@Model.Tax</p>
+    <h4 class="text-success">Grand Total: ₹@Model.GrandTotal</h4>
+</div>
+@using (Html.BeginForm("ProcessPayment", "User", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <!-- Hidden fields for important booking data -->
+    @Html.HiddenFor(m => m.MovieTitle)
+    @Html.HiddenFor(m => m.TheaterName)
+    @Html.HiddenFor(m => m.ShowtimeID)
+    @Html.HiddenFor(m => m.StartTime)
+    @Html.HiddenFor(m => m.TotalAmount)
+    @Html.HiddenFor(m => m.ConvenienceFee)
+    @Html.HiddenFor(m => m.Tax)
+    @Html.HiddenFor(m => m.GrandTotal)
+
+    <!-- Hidden fields for selected seats and types -->
+    for (int i = 0; i < Model.SelectedSeats.Count; i++)
+    {
+        @Html.HiddenFor(m => m.SelectedSeats[i])
+        @Html.HiddenFor(m => m.IsVip[i])
+    }
+
+    <h4>Select Payment Method</h4>
+    <div class="form-group mb-3">
+        @Html.DropDownListFor(m => m.PaymentMethod, new SelectList(new[]
+        {
+            new SelectListItem { Text = "-- Select Payment Method --", Value = "" },
+            new SelectListItem { Text = "Credit/Debit Card", Value = "Card" },
+            new SelectListItem { Text = "UPI", Value = "UPI" },
+            new SelectListItem { Text = "Net Banking", Value = "Netbanking" }
+        }, "Value", "Text"), new { @class = "form-control", required = "required" })
+        @Html.ValidationMessageFor(m => m.PaymentMethod, "", new { @class = "text-danger" })
+    </div>
+
+    <!-- Payment Fields (Card/UPI/Netbanking Sections) -->
+    <div id="cardFields" class="payment-method-fields">
+        <div class="form-group">
+            @Html.LabelFor(m => m.CardNumber)
+            @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control", placeholder = "1234 5678 9012 3456" })
+            @Html.ValidationMessageFor(m => m.CardNumber, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.CardName)
+            @Html.TextBoxFor(m => m.CardName, new { @class = "form-control", placeholder = "Cardholder Name" })
+            @Html.ValidationMessageFor(m => m.CardName, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.ExpiryDate)
+            @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", placeholder = "MM/YY" })
+            @Html.ValidationMessageFor(m => m.ExpiryDate, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.CVV)
+            @Html.PasswordFor(m => m.CVV, new { @class = "form-control", placeholder = "CVV", maxlength = "4" })
+            @Html.ValidationMessageFor(m => m.CVV, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div id="upiFields" class="payment-method-fields" style="display:none;">
+        <div class="form-group">
+            @Html.LabelFor(m => m.UpiId)
+            @Html.TextBoxFor(m => m.UpiId, new { @class = "form-control", placeholder = "yourname@upi" })
+            @Html.ValidationMessageFor(m => m.UpiId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div id="netbankingFields" class="payment-method-fields" style="display:none;">
+        <div class="form-group">
+            @Html.LabelFor(m => m.BankCode)
+            @Html.TextBoxFor(m => m.BankCode, new { @class = "form-control", placeholder = "Bank Code" })
+            @Html.ValidationMessageFor(m => m.BankCode, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Confirm & Pay</button>
+}
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const paymentMethod = document.getElementById('PaymentMethod');
+            const cardFields = document.getElementById('cardFields');
+            const upiFields = document.getElementById('upiFields');
+            const netbankingFields = document.getElementById('netbankingFields');
+
+            function togglePaymentFields() {
+                const method = paymentMethod.value;
+
+                // Hide all fields first
+                cardFields.style.display = 'none';
+                upiFields.style.display = 'none';
+                netbankingFields.style.display = 'none';
+
+                // Show relevant fields
+                if (method === 'Card') {
+                    cardFields.style.display = 'block';
+                } else if (method === 'UPI') {
+                    upiFields.style.display = 'block';
+                } else if (method === 'Netbanking') {
+                    netbankingFields.style.display = 'block';
+                }
+            }
+
+            // Initial toggle
+            togglePaymentFields();
+
+            // Add event listener for changes
+            paymentMethod.addEventListener('change', togglePaymentFields);
+        });
+    </script>
+}

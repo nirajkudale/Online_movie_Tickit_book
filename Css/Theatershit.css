@@ -1,0 +1,267 @@
+﻿/* ===== Theatre & Showtimes Page Styles ===== */
+:root {
+    --primary-red: #e50914;
+    --dark-red: #b20710;
+    --light-red: #ff4d4d;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #212529;
+    --text-dark: #212529;
+    --text-light: #6c757d;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* Base Styles */
+.movie-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h2.text-center {
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--primary-red);
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+    h2.text-center::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background-color: var(--primary-red);
+    }
+
+h1.text-center {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--dark-gray);
+}
+
+.text-primary {
+    color: var(--primary-red) !important;
+}
+
+.text-danger {
+    color: var(--primary-red) !important;
+}
+
+/* Tags */
+.tags {
+    margin-bottom: 2rem;
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background-color: var(--primary-red);
+    color: var(--white);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0 0.3rem;
+}
+
+/* Search Container */
+.search-container {
+    margin: 2rem 0;
+    position: relative;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 0.8rem 1.5rem 0.8rem 3rem;
+    border: 1px solid var(--medium-gray);
+    border-radius: 30px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 1.5rem center;
+    background-size: 1.2rem;
+}
+
+    #searchInput:focus {
+        outline: none;
+        border-color: var(--primary-red);
+        box-shadow: 0 0 0 0.25rem rgba(229, 9, 20, 0.25);
+    }
+
+/* Date Selector */
+.date-selector {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+    .date-selector button {
+        padding: 0.6rem 1.2rem;
+        background-color: var(--white);
+        border: 1px solid var(--medium-gray);
+        border-radius: 6px;
+        font-weight: 500;
+        color: var(--text-dark);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: var(--transition);
+    }
+
+        .date-selector button:hover {
+            background-color: var(--light-gray);
+        }
+
+        .date-selector button.active {
+            background-color: var(--primary-red);
+            color: var(--white);
+            border-color: var(--primary-red);
+        }
+
+/* Cinema Table */
+.cinema-table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: var(--shadow);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .cinema-table th {
+        background-color: var(--primary-red);
+        color: var(--white);
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .cinema-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--light-gray);
+        vertical-align: middle;
+    }
+
+    .cinema-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .cinema-table tr:hover {
+        background-color: var(--light-gray);
+    }
+
+/* Book Button */
+.showtimes button {
+    padding: 0.6rem 1.2rem;
+    background-color: var(--primary-red);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .showtimes button:hover {
+        background-color: var(--dark-red);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .cinema-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    h1.text-center {
+        font-size: 2rem;
+    }
+
+    .cinema-table th,
+    .cinema-table td {
+        padding: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .movie-container {
+        padding: 0 0.5rem;
+    }
+
+    h1.text-center {
+        font-size: 1.8rem;
+    }
+
+    .date-selector {
+        gap: 0.5rem;
+    }
+
+        .date-selector button {
+            padding: 0.5rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+    .showtimes button {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .tag {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.8rem;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cinema {
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+    /* Delay animations for staggered effect */
+    .cinema:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .cinema:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .cinema:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .cinema:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .cinema:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .cinema:nth-child(6) {
+        animation-delay: 0.6s;
+    }

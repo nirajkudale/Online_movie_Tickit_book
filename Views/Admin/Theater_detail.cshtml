@@ -1,0 +1,338 @@
+﻿@model Onlinemovietickitproject.Models.TheaterManagementViewModel
+
+@{
+    ViewBag.Title = "Theatre Management";
+    Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+
+<div class="user-management-container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Theatre List</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTheatreModal">
+            <i class="fas fa-plus"></i> Add New Theatre
+        </button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Total Seats</th>
+                    <th>Showtimes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var theatre in Model.Theatres)
+                {
+                    <tr>
+                        <td>@theatre.TheatreID</td>
+                        <td>@theatre.TheatreName</td>
+                        <td>@theatre.Location</td>
+                        <td>@theatre.TotalSeats</td>
+                        <td>
+                            <button class="btn btn-info btn-sm show-showtimes"
+                                    data-id="@theatre.TheatreID"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#showtimesModal">
+                                View Showtimes (@theatre.Showtimes.Count)
+                            </button>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-warning btn-sm edit-btn"
+                                        data-id="@theatre.TheatreID"
+                                        data-name="@theatre.TheatreName"
+                                        data-location="@theatre.Location"
+                                        data-seats="@theatre.TotalSeats">
+                                    Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-btn" data-id="@theatre.TheatreID">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Edit Theatre Modal -->
+<div class="modal fade" id="editTheatreModal" tabindex="-1" aria-labelledby="editTheatreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Theatre</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("UpdateTheatre", "Admin")">
+                <div class="modal-body">
+                    <input type="hidden" name="TheatreID" id="editTheatreID" />
+                    <div class="mb-3">
+                        <label class="form-label">Theatre Name</label>
+                        <input type="text" name="TheatreName" id="editTheatreName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" name="Location" id="editLocation" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total Seats</label>
+                        <input type="number" name="TotalSeats" id="editTotalSeats" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Update</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Theatre Modal -->
+<div class="modal fade" id="addTheatreModal" tabindex="-1" aria-labelledby="addTheatreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Theatre</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("AddTheatre", "Admin")">
+                <div class="modal-body">
+                    <input type="hidden" name="TheatreID" value="0" />
+                    <div class="mb-3">
+                        <label class="form-label">Theatre Name</label>
+                        <input type="text" name="TheatreName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" name="Location" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total Seats</label>
+                        <input type="number" name="TotalSeats" class="form-control" min="1" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Add Theatre</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Showtimes Modal -->
+<div class="modal fade" id="showtimesModal" tabindex="-1" aria-labelledby="showtimesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title">Showtimes for <span id="theatreNameTitle"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <button class="btn btn-primary" id="addShowtimeBtn" data-theatreid="">
+                        <i class="fas fa-plus"></i> Add Showtime
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="showtimesTable">
+                        <thead>
+                            <tr>
+                                <th>Movie</th>
+                                <th>Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Showtimes will be loaded here via AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Showtime Modal -->
+<div class="modal fade" id="showtimeFormModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title" id="showtimeModalTitle">Add Showtime</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="showtimeForm">
+                <div class="modal-body">
+                    <input type="hidden" id="showtimeId" name="ShowtimeID" value="0">
+                    <input type="hidden" id="theatreId" name="TheatreID" value="">
+
+                    <div class="mb-3">
+                        <label class="form-label">Movie</label>
+                        <select class="form-select" id="movieId" name="MovieID" required>
+                            <option value="">Select Movie</option>
+                            @foreach (var movie in Model.Movies)
+                            {
+                                <option value="@movie.MovieID">@movie.Title</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-control" id="showtimeDate" name="Date" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" class="form-control" id="startTime" name="StartTime" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">End Time</label>
+                        <input type="time" class="form-control" id="endTime" name="EndTime" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Theater edit button
+            $('.edit-btn').click(function () {
+                $('#editTheatreID').val($(this).data('id'));
+                $('#editTheatreName').val($(this).data('name'));
+                $('#editLocation').val($(this).data('location'));
+                $('#editTotalSeats').val($(this).data('seats'));
+                $('#editTheatreModal').modal('show');
+            });
+
+            // Delete theater button
+            $('.delete-btn').click(function() {
+                var theatreId = $(this).data('id');
+                if (confirm("Are you sure you want to delete this theatre?")) {
+                    window.location.href = '@Url.Action("DeleteTheatre", "Admin")/' + theatreId;
+                }
+            });
+
+            // Show showtimes for a theater
+            $('.show-showtimes').click(function() {
+                var theatreId = $(this).data('id');
+                var theatreName = $(this).closest('tr').find('td:nth-child(2)').text();
+
+                $('#theatreNameTitle').text(theatreName);
+                $('#addShowtimeBtn').data('theatreid', theatreId);
+                $('#theatreId').val(theatreId);
+
+                loadShowtimes(theatreId);
+            });
+
+            // Add showtime button
+            $('#addShowtimeBtn').click(function() {
+                $('#showtimeModalTitle').text('Add Showtime');
+                $('#showtimeId').val(0);
+                $('#showtimeForm')[0].reset();
+                $('#showtimeFormModal').modal('show');
+            });
+
+            // Load showtimes function
+            function loadShowtimes(theatreId) {
+                $.get('@Url.Action("GetShowtimesByTheatre", "Admin")', { theatreId: theatreId }, function(data) {
+                    var tableBody = $('#showtimesTable tbody');
+                    tableBody.empty();
+
+                    if (data.length === 0) {
+                        tableBody.append('<tr><td colspan="5">No showtimes found</td></tr>');
+                    } else {
+                        data.forEach(function(showtime) {
+                            var row = `<tr>
+                                <td>${showtime.Movy ? showtime.Movy.Title : 'N/A'}</td>
+                                <td>${showtime.Date}</td>
+                                <td>${showtime.StartTime}</td>
+                                <td>${showtime.EndTime}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm edit-showtime"
+                                            data-id="${showtime.ShowtimeID}"
+                                            data-movieid="${showtime.MovieID}"
+                                            data-date="${showtime.Date}"
+                                            data-starttime="${showtime.StartTime}"
+                                            data-endtime="${showtime.EndTime}">
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-sm delete-showtime" data-id="${showtime.ShowtimeID}">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>`;
+                            tableBody.append(row);
+                        });
+                    }
+                });
+            }
+
+            // Edit showtime
+            $(document).on('click', '.edit-showtime', function() {
+                $('#showtimeModalTitle').text('Edit Showtime');
+                $('#showtimeId').val($(this).data('id'));
+                $('#movieId').val($(this).data('movieid'));
+                $('#showtimeDate').val($(this).data('date'));
+                $('#startTime').val($(this).data('starttime'));
+                $('#endTime').val($(this).data('endtime'));
+                $('#showtimeFormModal').modal('show');
+            });
+
+            // Delete showtime
+            $(document).on('click', '.delete-showtime', function() {
+                if (confirm('Are you sure you want to delete this showtime?')) {
+                    var showtimeId = $(this).data('id');
+                    $.post('@Url.Action("DeleteShowtime", "Admin")', { id: showtimeId }, function() {
+                        var theatreId = $('#addShowtimeBtn').data('theatreid');
+                        loadShowtimes(theatreId);
+                    });
+                }
+            });
+
+            // Save showtime form
+            $('#showtimeForm').submit(function(e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+                var url = $('#showtimeId').val() == 0 ?
+                    '@Url.Action("AddShowtime", "Admin")' :
+                    '@Url.Action("EditShowtime", "Admin")';
+
+                $.post(url, formData, function(response) {
+                    if (response.success) {
+                        $('#showtimeFormModal').modal('hide');
+                        var theatreId = $('#addShowtimeBtn').data('theatreid');
+                        loadShowtimes(theatreId);
+                    } else {
+                        alert('Error saving showtime: ' + (response.errors || 'Unknown error'));
+                    }
+                }).fail(function() {
+                    alert('Error communicating with server');
+                });
+            });
+        });
+    </script>
+}

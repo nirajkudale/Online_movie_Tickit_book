@@ -1,0 +1,230 @@
+﻿/* ===== Payment History Page Styles ===== */
+:root {
+    --primary-red: #e50914;
+    --dark-red: #b20710;
+    --light-red: #ff4d4d;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #212529;
+    --text-dark: #212529;
+    --text-light: #6c757d;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    --ticket-stripe: repeating-linear-gradient( 45deg, var(--primary-red), var(--primary-red) 10px, var(--dark-red) 10px, var(--dark-red) 20px );
+}
+
+/* Base Styles */
+body {
+    background-color: var(--light-gray);
+    color: var(--text-dark);
+    font-family: 'Poppins', sans-serif;
+}
+
+
+
+h2 {
+    font-weight: 700;
+    color: var(--dark-gray);
+    margin-bottom: 2rem;
+    position: relative;
+    text-align: center;
+}
+
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background-color: var(--primary-red);
+    }
+
+/* Ticket Card Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    transition: var(--transition);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+    background-color: var(--white);
+}
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background: var(--ticket-stripe);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+.card-body {
+    padding: 2rem;
+    position: relative;
+}
+
+.card-title {
+    font-weight: 700;
+    color: var(--primary-red);
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    border-bottom: 1px dashed var(--medium-gray);
+    padding-bottom: 0.8rem;
+}
+
+/* Ticket Content */
+.card p {
+    margin-bottom: 0.8rem;
+    display: flex;
+}
+
+    .card p strong {
+        width: 120px;
+        color: var(--dark-gray);
+    }
+
+.card hr {
+    margin: 1.5rem 0;
+    border-top: 1px dashed var(--medium-gray);
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.4rem 0.8rem;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+/* QR Code Styles */
+img[alt="QR Code"] {
+    border: 1px solid var(--medium-gray);
+    padding: 0.5rem;
+    background: var(--white);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Styles */
+.btn-danger {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    transition: var(--transition);
+}
+
+    .btn-danger:hover {
+        background-color: var(--dark-red);
+        border-color: var(--dark-red);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+/* Perforation Effect (Ticket Tear) */
+.card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: repeating-linear-gradient( to right, transparent, transparent 10px, var(--medium-gray) 10px, var(--medium-gray) 20px );
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card p strong {
+        width: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .card p {
+        flex-direction: column;
+    }
+
+        .card p strong {
+            width: auto;
+            margin-bottom: 0.2rem;
+        }
+
+    img[alt="QR Code"] {
+        width: 120px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+    /* Staggered animations */
+    .card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .card:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .card:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .card:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .card:nth-child(6) {
+        animation-delay: 0.6s;
+    }

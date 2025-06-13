@@ -1,0 +1,132 @@
+﻿@model Onlinemovietickitproject.Models.User
+
+@{
+    ViewBag.Title = "Movie Details";
+    var movie = Model.Moviedata?.FirstOrDefault();
+}
+
+@if (movie != null)
+{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/Css/Detailshit.css"/>
+
+
+    <div class="movie-details-container">
+        <!-- Hero Section with Backdrop -->
+        <div class="movie-hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('@Url.Content(movie.ImageUrl)')">
+            <div class="hero-content container">
+                <div class="movie-poster">
+                    @if (!string.IsNullOrEmpty(movie.ImageUrl))
+                    {
+                        <img src="@Url.Content(movie.ImageUrl)" class="img-fluid rounded shadow" alt="@movie.Title" />
+                    }
+                    else
+                    {
+                        <div class="poster-placeholder">
+                            <i class="fas fa-film"></i>
+                        </div>
+                    }
+                </div>
+                <div class="movie-header">
+                    <h1>@movie.Title <span class="year">(@(movie.ReleaseDate?.ToString("dd-MM-yyyy") ?? "N/A"))</span></h1>
+
+                    <div class="meta-info">
+                        <span class="rating"><i class="fas fa-star"></i> @movie.Rating/10</span>
+                        <span class="duration"><i class="fas fa-clock"></i> @movie.Duration</span>
+                    </div>
+
+                    <div class="genre-container">
+                        @foreach (var genre in movie.Genre.Split(','))
+                        {
+                            var genreClass = genre.Trim().ToLower().Replace(" ", "-");
+                            <span class="genre-tag @genreClass">@genre.Trim()</span>
+                        }
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-lg book-ticket"
+                                onclick="window.location.href='@Url.Action("Theatre", "User", new { movieId = movie.MovieID })'">
+                            <i class="fas fa-ticket-alt"></i> Book Tickets
+                        </button>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Section -->
+        <div class="container main-content">
+            <div class="row">
+                <div class="col-lg-8">
+                    <section class="movie-synopsis">
+                        <h3>Synopsis</h3>
+
+                    </section>
+
+                    <section class="movie-cast">
+                        <h3>Cast</h3>
+                        <div class="cast-grid">
+                            @foreach (var castMember in movie.Cast.Split(','))
+                            {
+                                <div class="cast-member">
+                                    <div class="cast-photo">
+                                        <i class="fas fa-user" style="font-size: 50px; margin-top: 50px; color: #999;"></i>
+                                    </div>
+                                    <div class="cast-name">@castMember.Trim()</div>
+                                    <div class="cast-role">Actor/Actress</div>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="movie-info-card">
+                        <h4>Details</h4>
+                        <ul class="info-list">
+                            <li>
+                                <strong>Release Date:</strong>
+                                <span>@(movie.ReleaseDate?.ToString("dd-MM-yyyy") ?? "N/A")</span>
+
+
+                            </li>
+                            @*<li>
+                                <strong>Showtimes:</strong>
+                                <span>@movie.</span>
+                            </li>*@
+                            <li>
+                                <strong>Price:</strong>
+                                <span>₹@movie.Price</span>
+                            </li>
+                          
+                            <li>
+                                <strong>Director:</strong>
+                                <span>@movie.Director</span>
+                            </li>
+                        </ul>
+
+                        <div class="social-share">
+                            <h5>Share</h5>
+                            <div class="share-buttons">
+                                <button class="btn btn-sm btn-facebook"><i class="fab fa-facebook-f"></i></button>
+                                <button class="btn btn-sm btn-twitter"><i class="fab fa-twitter"></i></button>
+                                <button class="btn btn-sm btn-whatsapp"><i class="fab fa-whatsapp"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container error-container">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Movie Not Found</h4>
+            <p>The movie you're looking for doesn't exist or may have been removed.</p>
+            <hr>
+            <p class="mb-0">Try searching for another movie or go back to the <a href="/">homepage</a>.</p>
+        </div>
+    </div>
+}

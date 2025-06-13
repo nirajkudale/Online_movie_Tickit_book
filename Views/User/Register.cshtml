@@ -1,0 +1,223 @@
+﻿@model Onlinemovietickitproject.Models.User
+
+@{
+    ViewBag.Title = "Register";
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MovieTicket</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="~/Css/Registershit.css" rel="stylesheet" />
+</head>
+<body class="register-page">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-lg-6 col-md-8">
+                <div class="auth-card card shadow-lg">
+                    <div class="card-body p-5">
+
+                        <!-- Error Alert -->
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-exclamation-circle me-2"></i> @modelError.ErrorMessage
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
+                        }
+
+                        <!-- Logo Header -->
+                        <div class="text-center mb-4">
+                            <div class="logo-container mb-3">
+                                <i class="fas fa-ticket-alt logo-icon"></i>
+                                <span class="logo-text">MovieTicket</span>
+                            </div>
+                            <h3 class="auth-title">Create Your Account</h3>
+                            <p class="text-muted">Join us to book your favorite movies</p>
+                        </div>
+
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <!-- Username Field -->
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(x => x.Username, new { @class = "form-label" })
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    @Html.TextBoxFor(x => x.Username, new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "Enter your username",
+                                        required = "required"
+                                    })
+                                </div>
+                                <span class="validation-message text-danger">
+                                    @Html.ValidationMessageFor(x => x.Username)
+                                </span>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(x => x.Email, new { @class = "form-label" })
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    @Html.TextBoxFor(x => x.Email, new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "Enter your email",
+                                        type = "email",
+                                        required = "required"
+                                    })
+                                </div>
+                                <span class="validation-message text-danger">
+                                    @Html.ValidationMessageFor(x => x.Email)
+                                </span>
+                            </div>
+
+                            <!-- Phone Number Field -->
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(x => x.PhoneNumber, new { @class = "form-label" })
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-phone"></i>
+                                    </span>
+                                    @Html.TextBoxFor(x => x.PhoneNumber, new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "Enter your phone number",
+                                        type = "tel",
+                                        required = "required"
+                                    })
+                                </div>
+                                <span class="validation-message text-danger">
+                                    @Html.ValidationMessageFor(x => x.PhoneNumber)
+                                </span>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="form-group mb-4">
+                                @Html.LabelFor(x => x.Password, new { @class = "form-label" })
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    @Html.PasswordFor(x => x.Password, new
+                                    {
+                                        @class = "form-control password-input",
+                                        placeholder = "Create your password",
+                                        required = "required",
+                                        id = "passwordField"
+                                    })
+                                    <button class="btn btn-outline-secondary toggle-password" type="button">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength mt-2">
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted password-strength-text">Password strength</small>
+                                </div>
+                                <span class="validation-message text-danger">
+                                    @Html.ValidationMessageFor(x => x.Password)
+                                </span>
+                            </div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                <label class="form-check-label" for="termsCheck">
+                                    I agree to the <a href="#" class="text-primary">Terms and Conditions</a>
+                                </label>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary w-100 auth-btn mb-3">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </button>
+
+                            <!-- Login Link -->
+                            <div class="text-center mt-4">
+                                <p class="text-muted">
+                                    Already have an account?
+                                    <a href="@Url.Action("Login", "User")" class="text-primary fw-bold">Sign in</a>
+                                </p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Password visibility toggle
+            const togglePassword = document.querySelector('.toggle-password');
+            const passwordField = document.getElementById('passwordField');
+
+            if (togglePassword && passwordField) {
+                togglePassword.addEventListener('click', function () {
+                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordField.setAttribute('type', type);
+                    this.querySelector('i').classList.toggle('fa-eye');
+                    this.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+            }
+
+            // Password strength indicator
+            if (passwordField) {
+                passwordField.addEventListener('input', function () {
+                    const strengthBar = document.querySelector('.password-strength .progress-bar');
+                    const strengthText = document.querySelector('.password-strength-text');
+                    const password = this.value;
+                    let strength = 0;
+
+                    if (password.length > 0) strength += 20;
+                    if (password.length >= 8) strength += 20;
+                    if (/[A-Z]/.test(password)) strength += 20;
+                    if (/[0-9]/.test(password)) strength += 20;
+                    if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+
+                    strengthBar.style.width = strength + '%';
+
+                    if (strength < 40) {
+                        strengthBar.className = 'progress-bar bg-danger';
+                        strengthText.textContent = 'Weak password';
+                    } else if (strength < 70) {
+                        strengthBar.className = 'progress-bar bg-warning';
+                        strengthText.textContent = 'Moderate password';
+                    } else {
+                        strengthBar.className = 'progress-bar bg-success';
+                        strengthText.textContent = 'Strong password';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

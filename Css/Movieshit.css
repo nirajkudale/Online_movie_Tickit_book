@@ -1,0 +1,266 @@
+﻿/* ===== Movie Listing Page Styles ===== */
+:root {
+    --primary-red: #e50914;
+    --dark-red: #b20710;
+    --light-red: #ff4d4d;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #212529;
+    --text-dark: #212529;
+    --text-light: #6c757d;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* Base Styles */
+body {
+    background-color: var(--white);
+    color: var(--text-dark);
+    font-family: 'Poppins', sans-serif;
+}
+
+.container.py-5 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+}
+
+/* Filter Section */
+.filter-section {
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 20px;
+}
+
+.filter-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--light-gray);
+    color: var(--primary-red);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.form-check-input {
+    cursor: pointer;
+}
+
+    .form-check-input:checked {
+        background-color: var(--primary-red);
+        border-color: var(--primary-red);
+    }
+
+.form-check-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Rating Stars */
+.rating-stars {
+    color: #ffc107;
+}
+
+/* Movie Cards */
+.movie-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    background-color: var(--white);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+    .movie-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+.card-img-top {
+    height: 350px;
+    object-fit: cover;
+    width: 100%;
+    transition: transform 0.5s ease;
+}
+
+.movie-card:hover .card-img-top {
+    transform: scale(1.03);
+}
+
+.card-body {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--dark-gray);
+}
+
+.card-text {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+}
+
+    .card-text strong {
+        color: var(--dark-gray);
+    }
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+}
+
+    .btn-primary:hover {
+        background-color: var(--dark-red);
+        border-color: var(--dark-red);
+        transform: translateY(-2px);
+    }
+
+.btn-details {
+    background-color: var(--white);
+    color: var(--primary-red);
+    border: 1px solid var(--primary-red);
+    font-weight: 600;
+    transition: var(--transition);
+    margin-top: auto;
+}
+
+    .btn-details:hover {
+        background-color: var(--primary-red);
+        color: var(--white);
+    }
+
+/* Pagination */
+.pagination {
+    margin-top: 2rem;
+}
+
+.page-item .page-link {
+    color: var(--primary-red);
+    border: none;
+    margin: 0 5px;
+    border-radius: 5px !important;
+    transition: var(--transition);
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-red);
+    color: var(--white);
+    font-weight: 600;
+}
+
+.page-item:not(.active) .page-link:hover {
+    background-color: var(--light-gray);
+    color: var(--dark-red);
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    background-color: var(--light-gray);
+    border-radius: 10px;
+}
+
+.no-results-icon {
+    font-size: 3rem;
+    color: var(--primary-red);
+    margin-bottom: 1.5rem;
+}
+
+.no-results h4 {
+    color: var(--dark-gray);
+    font-weight: 600;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .card-img-top {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-section {
+        position: static;
+        margin-bottom: 2rem;
+    }
+
+    .card-img-top {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-img-top {
+        height: 200px;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .page-item {
+        margin-bottom: 5px;
+    }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.movie-card {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+    /* Delay animations for staggered effect */
+    .movie-card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .movie-card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .movie-card:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .movie-card:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .movie-card:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .movie-card:nth-child(6) {
+        animation-delay: 0.6s;
+    }

@@ -1,0 +1,216 @@
+﻿@model List<Onlinemovietickitproject.Models.Movy>
+
+@{
+    ViewBag.Title = "Movie Management";
+    Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Admincss/Userstyle.css">
+
+<div class="user-management-container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Movie List</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMovieModal">
+            <i class="fas fa-plus"></i> Add New Movie
+        </button>
+
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Release Date</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var movie in Model)
+                {
+                    <tr>
+                        <td>@movie.MovieID</td>
+                        <td>@movie.Title</td>
+                        <td>@movie.Genre</td>
+                        <td>@movie.ReleaseDate</td>
+                        <td>₹@movie.Price</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-warning btn-sm me-2 edit-btn"
+                                        data-id="@movie.MovieID"
+                                        data-title="@movie.Title"
+                                        data-genre="@movie.Genre"
+                                        data-director="@movie.Director"
+                                        data-cast="@movie.Cast"
+                                        data-duration="@movie.Duration"
+                                        data-releasedate="@(movie.ReleaseDate?.ToString("yyyy-MM-dd"))"
+                                        data-rating="@movie.Rating"
+                                        data-image="@movie.ImageUrl"
+                                        data-price="@movie.Price">
+                                    Edit
+                                </button>
+
+
+                                <button class="btn btn-danger btn-sm" onclick="deleteMovie(@movie.MovieID)">Delete</button>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Add Movie Modal -->
+<div class="modal fade" id="addMovieModal" tabindex="-1" aria-labelledby="addMovieModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Movie</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("Movie_detail", "Admin")">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="Title" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Genre</label>
+                            <input type="text" name="Genre" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Director</label>
+                            <input type="text" name="Director" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Cast</label>
+                            <input type="text" name="Cast" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Duration (mins)</label>
+                            <input type="number" name="Duration" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Release Date</label>
+                            <input type="date" name="ReleaseDate" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Rating</label>
+                            <input type="text" name="Rating" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Image URL</label>
+                            <input type="text" name="ImageUrl" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Price</label>
+                            <input type="number" name="Price" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Add Movie</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Edit Movie Modal -->
+<div class="modal fade" id="editMovieModal" tabindex="-1" aria-labelledby="editMovieModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Movie</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("Movie_detail", "Admin")">
+                <div class="modal-body">
+                    <input type="hidden" name="MovieID" id="editMovieID" />
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="Title" id="editTitle" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Genre</label>
+                            <input type="text" name="Genre" id="editGenre" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Director</label>
+                            <input type="text" name="Director" id="editDirector" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Cast</label>
+                            <input type="text" name="Cast" id="editCast" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Duration (mins)</label>
+                            <input type="number" name="Duration" id="editDuration" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Release Date</label>
+                            <input type="date" name="ReleaseDate" id="editReleaseDate" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Rating</label>
+                            <input type="text" name="Rating" id="editRating" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Image URL</label>
+                            <input type="text" name="ImageUrl" id="editImageUrl" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Price</label>
+                            <input type="number" name="Price" id="editPrice" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Update</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+    <script>
+
+            $('.edit-btn').click(function () {
+                $('#editMovieID').val($(this).data('id'));
+                $('#editTitle').val($(this).data('title'));
+                $('#editGenre').val($(this).data('genre'));
+                $('#editDirector').val($(this).data('director'));
+                $('#editCast').val($(this).data('cast'));
+                $('#editDuration').val($(this).data('duration'));
+                $('#editReleaseDate').val($(this).data('releasedate'));
+                $('#editRating').val($(this).data('rating'));
+                $('#editImageUrl').val($(this).data('image'));
+                $('#editPrice').val($(this).data('price'));
+                $('#editMovieModal').modal('show');
+            });
+
+
+
+       function deleteMovie(id) {
+                 if (confirm("Are you sure you want to delete this movie?")) {
+                    window.location.href = '@Url.Action("DeleteMovie", "Admin")/' + id;
+                 }
+        }
+
+    </script>
+}

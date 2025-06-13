@@ -1,0 +1,114 @@
+﻿@model Onlinemovietickitproject.Models.User
+
+@{
+    ViewBag.Title = "Theatre";
+    var movie = Model?.Moviedata?.FirstOrDefault();
+}
+
+<h2 class="text-center text-primary">Theatre & Showtimes</h2>
+
+<link href="~/Css/Theatershit.css" rel="stylesheet" />
+
+<div class="movie-container">
+    @if (movie != null)
+    {
+        <h1 class="text-center">🎬 <span class="text-primary">@movie.Title</span></h1>
+        <div class="tags text-center">
+            <span class="tag">@movie.Genre</span>
+        </div>
+    }
+    else
+    {
+        <h3 class="text-danger text-center">Movie not found.</h3>
+    }
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="🔍 Search theatres or showtimes..." onkeyup="filterCinemas()">
+    </div>
+
+    <div class="date-selector" id="dateSelector">
+        @foreach (var showtime in Model.showtimesData.Select(s => s.Date.Date).Distinct())
+        {
+            <button onclick="filterByDate('@showtime.ToString("yyyy-MM-dd")')">@showtime.ToString("MM/dd/yyyy")</button>
+        }
+    </div>
+
+    <div class="cinema-list">
+        <table class="cinema-table" id="cinemaTable">
+            <tr>
+                <th>Theatre Name</th>
+                <th>Location</th>
+                <th>Show Start</th>
+                <th>Show End</th>
+                <th>Book Now</th>
+            </tr>
+            @foreach (var showtime in Model.showtimesData)
+            {
+                var theatre = Model.TheatreData.FirstOrDefault(t => t.TheatreID == showtime.TheatreID);
+                var movy = Model.Moviedata != null
+                ? Model.Moviedata.FirstOrDefault(m => m.MovieID == showtime.MovieID)
+                : null;
+                <tr class="cinema" data-name="@theatre.TheatreName" data-date="@showtime.Date.ToString("yyyy-MM-dd")">
+                    <td>@theatre.TheatreName</td>
+                    <td>@theatre.Location</td>
+                    <td>@showtime.StartTime</td>
+                    <td>@showtime.EndTime</td>
+                    <td class="showtimes">
+                        <button onclick="bookShow(
+        '@theatre.TheatreID',
+        '@theatre.TheatreName',
+        '@showtime.StartTime',
+        '@theatre.TotalSeats',
+        '@(movie != null ? movie.Title : "Unknown")',
+        '@showtime.ShowtimeID')">
+                            <!-- Add showtimeId -->
+                            Book 🎟️
+                        </button>
+                    </td>
+
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<script>
+    function filterByDate(selectedDate) {
+        document.querySelectorAll(".date-selector button").forEach(btn => {
+            btn.classList.remove("active");
+            if (btn.getAttribute("onclick").includes(selectedDate)) btn.classList.add("active");
+        });
+
+        document.querySelectorAll(".cinema").forEach(row => {
+            row.style.display = row.getAttribute("data-date") === selectedDate ? "table-row" : "none";
+        });
+    }
+
+    function filterCinemas() {
+        let input = document.getElementById("searchInput").value.toLowerCase();
+        document.querySelectorAll(".cinema").forEach(cinema => {
+            let cinemaName = cinema.getAttribute("data-name").toLowerCase();
+            cinema.style.display = cinemaName.includes(input) ? "table-row" : "none";
+        });
+    }
+
+    function bookShow(theatreName, showTime) {
+        alert("Booking confirmed at " + theatreName + " for " + showTime);
+    }
+
+
+
+    function bookShow(theatreId, theatreName, startTime, totalSeats, movieTitle, showtimeId) {
+        // Redirect and include movieTitle
+        window.location.href = "/User/Movie_Tickit?" +
+            "theatreId=" + theatreId +
+            "&theatreName=" + encodeURIComponent(theatreName) +
+            "&startTime=" + encodeURIComponent(startTime) +
+            "&totalSeats=" + encodeURIComponent(totalSeats) +
+            "&movieTitle=" + encodeURIComponent(movieTitle) +
+            "&showtimeId=" + showtimeId;
+    }
+
+
+
+</script>

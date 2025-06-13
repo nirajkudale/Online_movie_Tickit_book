@@ -1,0 +1,200 @@
+﻿/* ===== Payment Page Styles ===== */
+:root {
+    --primary-red: #e50914;
+    --dark-red: #b20710;
+    --light-red: #ff4d4d;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #212529;
+    --text-dark: #212529;
+    --text-light: #6c757d;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* Base Styles */
+body {
+    background-color: var(--light-gray);
+    color: var(--text-dark);
+    font-family: 'Poppins', sans-serif;
+}
+
+h2 {
+    font-weight: 700;
+    color: var(--dark-gray);
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100px;
+        height: 3px;
+        background-color: var(--primary-red);
+    }
+
+h4 {
+    font-weight: 600;
+    color: var(--dark-gray);
+    margin-bottom: 1.5rem;
+}
+
+h5 {
+    font-weight: 500;
+    color: var(--dark-gray);
+    margin-bottom: 1rem;
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--white);
+    border: none;
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+    .card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+.text-success {
+    color: var(--primary-red) !important;
+    font-weight: 700;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    height: 45px;
+    border-radius: 6px;
+    border: 1px solid var(--medium-gray);
+    padding: 0.8rem 1rem;
+    transition: var(--transition);
+}
+
+    .form-control:focus {
+        border-color: var(--primary-red);
+        box-shadow: 0 0 0 0.25rem rgba(229, 9, 20, 0.25);
+    }
+
+label {
+    font-weight: 500;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Payment Method Toggle */
+.payment-method-fields {
+    background-color: var(--white);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+    width: 100%;
+    margin-top: 1rem;
+}
+
+    .btn-primary:hover {
+        background-color: var(--dark-red);
+        border-color: var(--dark-red);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+/* List Styles */
+ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+    ul li {
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+    }
+
+/* Validation Styles */
+.text-danger {
+    color: var(--primary-red) !important;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    display: block;
+}
+
+.field-validation-error {
+    color: var(--primary-red);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card {
+        padding: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h4 {
+        font-size: 1.3rem;
+    }
+
+    .form-control {
+        height: 40px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        padding: 1.2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h4 {
+        font-size: 1.1rem;
+    }
+
+    .btn-primary {
+        padding: 0.7rem 1.5rem;
+    }
+}
+
+/* Animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.btn-primary:hover {
+    animation: pulse 1.5s infinite;
+}

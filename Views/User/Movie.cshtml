@@ -1,0 +1,198 @@
+﻿@model Onlinemovietickitproject.Models.User
+@using PagedList.Mvc
+@using PagedList
+@{
+    var selectedGenres = Request.QueryString.GetValues("selectedGenres") ?? new string[0];
+    var selectedYears = Request.QueryString.GetValues("selectedYears") ?? new string[0];
+    var selectedRatings = Request.QueryString.GetValues("selectedRatings") ?? new string[0];
+    ViewBag.Title = "Movies";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/Css/Movieshit.css">
+
+
+
+
+
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3 mb-4">
+                <div class="filter-section p-4">
+                    <div class="filter-header">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-sliders-h me-2"></i>Filters</h5>
+                    </div>
+
+                    <form method="get" action="@Url.Action("Movie", "User")">
+                        <!-- Genre Filter -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold mb-3"><i class="fas fa-film me-2"></i>Genre</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var genre in new List<string> { "Action", "Comedy", "Drama", "Horror", "Sci-Fi" })
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="genre-@genre" name="selectedGenres" value="@genre"
+                                               @(Request.QueryString["selectedGenres"]?.Contains(genre) == true ? "checked" : "") />
+                                        <label class="form-check-label" for="genre-@genre">@genre</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Rating Filter -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold mb-3"><i class="fas fa-star me-2"></i>Rating</label>
+                            @foreach (var rating in new List<int> { 5, 4, 3, 2, 1 })
+                            {
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="rating-@rating" name="selectedRatings" value="@rating"
+                                           @(Request.QueryString["selectedRatings"]?.Contains(rating.ToString()) == true ? "checked" : "") />
+                                    <label class="form-check-label" for="rating-@rating">
+                                        @for (int i = 0; i < rating; i++)
+                                        {
+                                            <i class="fas fa-star rating-stars"></i>
+
+                                        }
+                                        & above
+                                    </label>
+                                </div>
+                            }
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                            <i class="fas fa-filter me-2"></i>Apply Filters
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Movies List -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0 fw-bold">Now Showing</h2>
+                    <div class="dropdown">
+                        @*<button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-sort me-2"></i>Sort By
+                            </button>*@
+                        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                            <li><a class="dropdown-item" href="#">Popularity</a></li>
+                            <li><a class="dropdown-item" href="#">Rating</a></li>
+                            <li><a class="dropdown-item" href="#">Release Date</a></li>
+                            <li><a class="dropdown-item" href="#">A-Z</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                @if (Model.Moviecatagory.Count > 0)
+                {
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        @foreach (var movie in Model.Moviecatagory)
+                        {
+                            <div class="col">
+                                <div class="movie-card h-100">
+                                    <img src="@movie.ImageUrl" class="card-img-top" alt="@movie.Title">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">@movie.Title</h5>
+                                        <p class="card-text mb-1"><strong>Genre:</strong> @movie.Genre</p>
+                                        <p class="card-text mb-1">
+                                            <strong>Rating:</strong>
+                                            @for (int i = 0; i < movie.Rating; i++)
+                                            {
+                                                <i class="fas fa-star rating-stars"></i>
+                                            }
+                                            (@movie.Rating/5)
+                                        </p>
+                                        <p class="card-text"><strong>Duration:</strong> @movie.Duration mins</p>
+                                        <a href="@Url.Action("Datails", "User", new { movieId = movie.MovieID })" class="btn btn-details mt-auto">
+                                            <i class="fas fa-ticket-alt me-2"></i>Book Tickets
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-5 d-flex justify-content-center">
+                        @Html.PagedListPager((PagedList.IPagedList)Model.Moviecatagory, page =>
+                            Url.Action("Movie", new
+                            {
+                                page,
+                                selectedGenres = selectedGenres != null ? string.Join(",", selectedGenres) : null,
+                                selectedYears = selectedYears != null ? string.Join(",", selectedYears) : null,
+                                selectedRatings = selectedRatings != null ? string.Join(",", selectedRatings) : null
+                            }),
+                            new PagedListRenderOptions
+                            {
+                                LiElementClasses = new[] { "page-item" },
+
+                                DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                                DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                                MaximumPageNumbersToDisplay = 5
+                            }
+                        )
+                    </div>
+                }
+                else
+                {
+                    <div class="no-results">
+                        <div class="no-results-icon">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        <h4 class="mb-3">No Movies Found</h4>
+                        <p class="text-muted">Try adjusting your filters to find what you're looking for.</p>
+                        <a href="@Url.Action("Movie", "User")" class="btn btn-primary mt-3">
+                            <i class="fas fa-times me-2"></i>Clear Filters
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const paginationItems = document.querySelectorAll('.pagination .page-item');
+            paginationItems.forEach(item => {
+                const pageLink = item.querySelector('.page-link');
+                if (item.classList.contains('active') && pageLink) {
+                    pageLink.classList.add('fw-bold');
+                }
+            });
+
+            // Animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+        });
+
+    </script>
+</body>
+</html>

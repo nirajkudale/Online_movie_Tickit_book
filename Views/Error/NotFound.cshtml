@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Page Not Found";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>404 - Page Not Found</title>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .notfound-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        .notfound-icon {
+            font-size: 100px;
+            color: #dc3545;
+        }
+
+        .btn-home {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="notfound-container container">
+        <div class="notfound-icon">🚫</div>
+        <h1 class="display-4">404 - Page Not Found</h1>
+        <p class="lead">Sorry, the page you're looking for doesn't exist or has been moved.</p>
+        <a href="~/User/Index" class="btn btn-danger btn-home">Go to Homepage</a>
+    </div>
+</body>
+</html>
+

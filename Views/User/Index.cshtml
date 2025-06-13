@@ -1,0 +1,465 @@
+﻿@model Onlinemovietickitproject.Models.User
+@{
+    ViewBag.Title = "Index";
+    var movies = ViewBag.UpcomingMovies as List<Onlinemovietickitproject.Models.Movieapi>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Ticket Booking</title>
+    <link href="~/Css/IndexShit.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Banner Slider -->
+    <div class="banner-container">
+        <div class="banner-slider" role="region" aria-label="Movie highlights">
+            <div class="slides" aria-live="polite">
+                <div class="slide active" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://image.tmdb.org/t/p/original/1XDDXPXGiI8id7MrUxK36ke7gkX.jpg');">
+                    <div class="banner-overlay">
+                        <h2>Kung Fu Panda 4</h2>
+                        <div class="movie-meta">
+                            <span>PG-13</span>
+                            <span>English</span>
+                            <span>3h 1m</span>
+                        </div>
+                        <button class="btn-book" onclick="location.href='@Url.Action("Book", "Movie")'">Book Now</button>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://image.tmdb.org/t/p/original/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg');">
+                    <div class="banner-overlay">
+                        <h2>Avengers: Endgame</h2>
+                        <div class="movie-meta">
+                            <span>PG-13</span>
+                            <span>English</span>
+                            <span>2h 28m</span>
+                        </div>
+                        <button class="btn-book" onclick="location.href='@Url.Action("Book", "Movie")'">Book Now</button>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://image.tmdb.org/t/p/original/6DrHO1jr3qVrViUO6s6kFiAGM7.jpg');">
+                    <div class="banner-overlay">
+                        <h2>Sonic the Hedgehog 2</h2>
+                        <div class="movie-meta">
+                            <span>U/A</span>
+                            <span>Hindi</span>
+                            <span>3h 7m</span>
+                        </div>
+                        <button class="btn-book" onclick="location.href='@Url.Action("Book", "Movie")'">Book Now</button>
+                    </div>
+                </div>
+            </div>
+            <button class="slider-btn prev" aria-label="Previous slide" onclick="moveSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+            <button class="slider-btn next" aria-label="Next slide" onclick="moveSlide(1)"><i class="fas fa-chevron-right"></i></button>
+            <div class="slider-dots">
+                <span class="dot active" onclick="currentSlide(1)" aria-label="Go to slide 1"></span>
+                <span class="dot" onclick="currentSlide(2)" aria-label="Go to slide 2"></span>
+                <span class="dot" onclick="currentSlide(3)" aria-label="Go to slide 3"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Currently Showing Movies -->
+    <section class="movies-section container">
+        <div class="section-header">
+            <h2 class="section-title">Currently Showing</h2>
+            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="movies-grid">
+            <div class="movie-card">
+                <div class="movie-poster-container">
+                    <img src="https://image.tmdb.org/t/p/w500/aQPeznSu7XDTrrdCtT5eLiu52Yu.jpg" alt="Movie poster for Saw X" class="movie-poster" loading="lazy">
+                    <div class="movie-overlay">
+                        <button class="btn btn-light trailer-btn" data-video-src="https://www.youtube.com/embed/t3PzUo4P21c"><i class="fas fa-play"></i> Trailer</button>
+                        <button class="btn-book" onclick="location.href='@Url.Action("Book", "Movie")'">Book Now</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Saw X</h3>
+                    <div class="movie-meta">
+                        <span>PG-13</span>
+                        <span>English</span>
+                    </div>
+                    <div class="movie-genres">
+                        <span>Action</span>
+                        <span>Horror</span>
+                    </div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <div class="movie-poster-container">
+                    <img src="https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg" alt="Movie poster for Spider-Man: No Way Home" class="movie-poster" loading="lazy">
+                    <div class="movie-overlay">
+                        <button class="btn btn-light trailer-btn" data-video-src="https://www.youtube.com/embed/JfVOs4VSpmA"><i class="fas fa-play"></i> Trailer</button>
+                        <button class="btn-book" onclick="location.href='@Url.Action("Book", "Movie")'">Book Now</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Spider-Man: No Way Home</h3>
+                    <div class="movie-meta">
+                        <span>PG-13</span>
+                        <span>English</span>
+                    </div>
+                    <div class="movie-genres">
+                        <span>Action</span>
+                        <span>Adventure</span>
+                        <span>Sci-Fi</span>
+                    </div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <div class="movie-poster-container">
+                    <img src="https://image.tmdb.org/t/p/w500/6DrHO1jr3qVrViUO6s6kFiAGM7.jpg" alt="Movie poster for Sonic the Hedgehog 2" class="movie-poster" loading="lazy">
+                    <div class="movie-overlay">
+                        <button class="btn btn-light trailer-btn" data-video-src="https://www.youtube.com/embed/G5kzUpWAusI"><i class="fas fa-play"></i> Trailer</button>
+                        <button class="btn-book" onclick="location.href='@Url.Action("Book", "Movie")'">Book Now</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Sonic the Hedgehog 2</h3>
+                    <div class="movie-meta">
+                        <span>U/A</span>
+                        <span>Hindi</span>
+                    </div>
+                    <div class="movie-genres">
+                        <span>Action</span>
+                        <span>Drama</span>
+                    </div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <div class="movie-poster-container">
+                    <img src="https://image.tmdb.org/t/p/w500/1BIoJGKbXjdFDAqUEiA2VHqkK1Z.jpg" alt="Movie poster for Shang-Chi" class="movie-poster" loading="lazy">
+                    <div class="movie-overlay">
+                        <button class="btn btn-light trailer-btn" data-video-src="https://www.youtube.com/embed/giWIr7U1deA"><i class="fas fa-play"></i> Trailer</button>
+                        <button class="btn-book" onclick="location.href='@Url.Action("Book", "Movie")'">Book Now</button>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Shang-Chi</h3>
+                    <div class="movie-meta">
+                        <span>PG-13</span>
+                        <span>English</span>
+                    </div>
+                    <div class="movie-genres">
+                        <span>Action</span>
+                        <span>Adventure</span>
+                        <span>Fantasy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trailer Modals -->
+    <div class="modal fade" id="trailerModal" tabindex="-1" aria-labelledby="trailerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="trailerModalLabel">Movie Trailer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="ratio ratio-16x9">
+                        <iframe id="trailerVideo" src="" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Events Slider -->
+    <section class="events-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Upcoming Events</h2>
+                <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="events-slider" role="region" aria-label="Upcoming events">
+                <div class="event-slides" aria-live="polite">
+                    <div class="event-slide active" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://www.matrixvisual.com/wp-content/uploads/2018/09/Mockingjay-Part-2-Premiere.jpg');">
+                        <div class="event-overlay">
+                            <h3>Movie Premiere</h3>
+                            <h2>"The New Adventure"</h2>
+                            <div class="event-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> ABC Theater</span>
+                                <span><i class="fas fa-calendar-alt"></i> June 15, 2025</span>
+                            </div>
+                            <button class="btn-book" onclick="location.href='@Url.Action("Book", "Event")'">Book Tickets</button>
+                        </div>
+                    </div>
+                    <div class="event-slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://tse4.mm.bing.net/th/id/OIP.JC16L6L0YJ4SlnB9EJLozwHaFj?pid=ImgDet&rs=1');">
+                        <div class="event-overlay">
+                            <h3>Live Concert</h3>
+                            <h2>Summer Beats Festival</h2>
+                            <div class="event-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> XYZ Arena</span>
+                                <span><i class="fas fa-calendar-alt"></i> July 25, 2025</span>
+                            </div>
+                            <button class="btn-book" onclick="location.href='@Url.Action("Book", "Event")'">Book Tickets</button>
+                        </div>
+                    </div>
+                    <div class="event-slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://tse4.mm.bing.net/th/id/OIP.J_ByBReOmYVplYM0Fxyf4wHaFj?pid=ImgDet&rs=1');">
+                        <div class="event-overlay">
+                            <h3>Theater Play</h3>
+                            <h2>Shakespeare in the Park</h2>
+                            <div class="event-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> City Park</span>
+                                <span><i class="fas fa-calendar-alt"></i> August 10, 2025</span>
+                            </div>
+                            <button class="btn-book" onclick="location.href='@Url.Action("Book", "Event")'">Book Tickets</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="event-slider-btn prev" aria-label="Previous event" onclick="moveEventSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+                <button class="event-slider-btn next" aria-label="Next event" onclick="moveEventSlide(1)"><i class="fas fa-chevron-right"></i></button>
+                <div class="event-slider-dots">
+                    <span class="event-dot active" onclick="currentEventSlide(1)" aria-label="Go to event 1"></span>
+                    <span class="event-dot" onclick="currentEventSlide(2)" aria-label="Go to event 2"></span>
+                    <span class="event-dot" onclick="currentEventSlide(3)" aria-label="Go to event 3"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Movies -->
+    <section class="movies-section container">
+        <div class="section-header">
+            <h2 class="section-title">Upcoming Movies</h2>
+            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="upcoming-movies-grid">
+            @if (movies != null && movies.Any())
+            {
+                foreach (var movie in movies)
+                {
+                    <div class="upcoming-card">
+                        <div class="upcoming-poster-container">
+                            <img src="@movie.PosterPath" class="upcoming-poster" alt="@movie.Title poster" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450'">
+                        </div>
+                        <div class="upcoming-info">
+                            <h3 class="upcoming-title">@movie.Title</h3>
+                            <div class="movie-meta">
+                                <span>@movie.AgeRating</span>
+                                <span>@movie.Language</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p style="grid-column: 1 / -1; text-align: center;">No upcoming movies available.</p>
+            }
+        </div>
+    </section>
+
+    <!-- Feedback Cards -->
+    <section class="feedback-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Customer Feedback</h2>
+                <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feedback-cards-container">
+                <div class="feedback-card-circle">
+                    <div class="feedback-user-circle">
+                        <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Alice Johnson profile picture" loading="lazy">
+                    </div>
+                    <h4 class="user-name-circle">Alice Johnson</h4>
+                    <div class="user-rating-circle" aria-label="5 out of 5 stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="feedback-text-circle">Amazing experience! The movie selection was great, and the booking process was so easy!</p>
+                </div>
+
+                <div class="feedback-card-circle">
+                    <div class="feedback-user-circle">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Smith profile picture" loading="lazy">
+                    </div>
+                    <h4 class="user-name-circle">John Smith</h4>
+                    <div class="user-rating-circle" aria-label="4.5 out of 5 stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="feedback-text-circle">I loved the online booking system. Smooth and fast. Highly recommend to all movie lovers!</p>
+                </div>
+
+                <div class="feedback-card-circle">
+                    <div class="feedback-user-circle">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Sarah Lee profile picture" loading="lazy">
+                    </div>
+                    <h4 class="user-name-circle">Sarah Lee</h4>
+                    <div class="user-rating-circle" aria-label="5 out of 5 stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="feedback-text-circle">The website is very user-friendly, and I got my tickets in no time. Excellent customer support!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script>
+        // Movie Trailer Modal Class
+        class MovieTrailerModal {
+            constructor() {
+                this.modal = new bootstrap.Modal(document.getElementById('trailerModal'));
+                this.video = document.getElementById('trailerVideo');
+                this.modalTitle = document.getElementById('trailerModalLabel');
+                this.initEvents();
+            }
+
+            initEvents() {
+                document.querySelectorAll('.trailer-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.openTrailer(e.target));
+                });
+
+                document.getElementById('trailerModal').addEventListener('hidden.bs.modal', () => {
+                    this.resetVideo();
+                });
+            }
+
+            openTrailer(button) {
+                const videoSrc = button.dataset.videoSrc;
+                const movieTitle = button.closest('.movie-card').querySelector('.movie-title').textContent;
+                this.video.src = `${videoSrc}?autoplay=1&rel=0&modestbranding=1`;
+                this.modalTitle.textContent = `${movieTitle} Trailer`;
+                this.modal.show();
+            }
+
+            resetVideo() {
+                this.video.src = '';
+            }
+        }
+
+        // Slider Class
+        class Slider {
+            constructor(sliderSelector, options = {}) {
+                this.slider = document.querySelector(sliderSelector);
+                this.slides = this.slider.querySelectorAll('.slide, .event-slide');
+                this.dots = this.slider.querySelectorAll('.dot, .event-dot');
+                this.currentIndex = 0;
+                this.interval = null;
+                this.autoPlay = options.autoPlay || true;
+                this.intervalTime = options.intervalTime || 5000;
+                this.track = this.slider.querySelector('.slides, .event-slides');
+
+                this.init();
+            }
+
+            init() {
+                if (this.autoPlay) {
+                    this.startAutoPlay();
+                }
+
+                // Pause on hover
+                this.slider.addEventListener('mouseenter', () => clearInterval(this.interval));
+                this.slider.addEventListener('mouseleave', () => this.startAutoPlay());
+            }
+
+            startAutoPlay() {
+                this.interval = setInterval(() => this.moveSlide(1), this.intervalTime);
+            }
+
+            moveSlide(n) {
+                this.currentIndex = (this.currentIndex + n + this.slides.length) % this.slides.length;
+                this.updateSlider();
+            }
+
+            goToSlide(n) {
+                this.currentIndex = n;
+                this.updateSlider();
+            }
+
+            updateSlider() {
+                // Move slides
+                this.track.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+
+                // Update active classes
+                this.slides.forEach(slide => slide.classList.remove('active'));
+                this.slides[this.currentIndex].classList.add('active');
+
+                // Update dots
+                if (this.dots.length) {
+                    this.dots.forEach(dot => dot.classList.remove('active'));
+                    this.dots[this.currentIndex].classList.add('active');
+                }
+
+                // Reset autoplay
+                if (this.autoPlay) {
+                    clearInterval(this.interval);
+                    this.startAutoPlay();
+                }
+            }
+        }
+
+        // Image Error Handler
+        function handleImageError(img) {
+            if (img.classList.contains('movie-poster') || img.classList.contains('upcoming-poster')) {
+                img.src = 'https://via.placeholder.com/300x450';
+            } else if (img.classList.contains('event-poster')) {
+                img.src = 'https://via.placeholder.com/800x450';
+            } else {
+                img.src = 'https://via.placeholder.com/100';
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new MovieTrailerModal();
+            new Slider('.banner-slider');
+            new Slider('.events-slider');
+
+            // Image fallback handler
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('error', () => handleImageError(img));
+            });
+        });
+
+        // Expose functions to window for HTML onclick handlers
+        window.moveSlide = (n) => {
+            const slider = document.querySelector('.banner-slider');
+            const sliderInstance = slider._sliderInstance || new Slider('.banner-slider');
+            slider._sliderInstance = sliderInstance;
+            sliderInstance.moveSlide(n);
+        };
+
+        window.currentSlide = (n) => {
+            const slider = document.querySelector('.banner-slider');
+            const sliderInstance = slider._sliderInstance || new Slider('.banner-slider');
+            slider._sliderInstance = sliderInstance;
+            sliderInstance.goToSlide(n - 1);
+        };
+
+        window.moveEventSlide = (n) => {
+            const slider = document.querySelector('.events-slider');
+            const sliderInstance = slider._sliderInstance || new Slider('.events-slider');
+            slider._sliderInstance = sliderInstance;
+            sliderInstance.moveSlide(n);
+        };
+
+        window.currentEventSlide = (n) => {
+            const slider = document.querySelector('.events-slider');
+            const sliderInstance = slider._sliderInstance || new Slider('.events-slider');
+            slider._sliderInstance = sliderInstance;
+            sliderInstance.goToSlide(n - 1);
+        };
+    </script>
+</body>
+</html>

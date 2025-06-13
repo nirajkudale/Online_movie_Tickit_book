@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "Add_theater";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Theater</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 450px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s ease;
+        }
+
+            button:hover {
+                background: #218838;
+            }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Add New Theater</h2>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+
+        <form asp-action="AddTheater" method="post">
+            <div>
+                <label asp-for="TheaterName">Theater Name</label>
+                <input asp-for="TheaterName" class="form-control" required />
+                <span asp-validation-for="TheaterName" class="text-danger"></span>
+            </div>
+
+            <div>
+                <label asp-for="Location">Location</label>
+                <input asp-for="Location" class="form-control" required />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+
+            <div>
+                <label asp-for="SeatingCapacity">Seating Capacity</label>
+                <input asp-for="SeatingCapacity" type="number" class="form-control" required />
+                <span asp-validation-for="SeatingCapacity" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Theater</button>
+        </form>
+    </div>
+</body>
+</html>

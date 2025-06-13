@@ -1,0 +1,278 @@
+﻿@model Onlinemovietickitproject.Models.User
+@{
+    ViewBag.Title = "Movie_Tickit";
+    var movie = Model?.Moviedata?.FirstOrDefault();
+}
+@{
+    int totalSeats = ViewBag.TotalSeats;
+    int seatsPerRow = 18;
+    int totalRows = (int)Math.Ceiling((double)totalSeats / seatsPerRow);
+    var bookedSeats = ViewBag.BookedSeats as List<int> ?? new List<int>(); // Get booked seats
+}
+
+
+<link href="~/Css/Movietickitshit.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="movie-header">
+        <h1 class="movie-title">🎬 @ViewBag.MovieTitle</h1>
+        <div class="movie-info">
+            <div class="movie-info-item">
+                <span class="movie-info-icon">🏢</span>
+                <span>@ViewBag.Theatername</span>
+            </div>
+            <div class="movie-info-item">
+                <span class="movie-info-icon">🕒</span>
+                <span>@ViewBag.StartTime</span>
+            </div>
+            <div class="movie-info-item">
+                <span class="movie-info-icon">🧑‍🤝‍🧑</span>
+                <span>@ViewBag.TotalSeats seats available</span>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="selection-area">
+        <div class="seat-legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #444;"></div>
+                <span>Available</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--selected-color);"></div>
+                <span>Selected</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--vip-color);"></div>
+                <span>VIP (+₹100)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--occupied-color);"></div>
+                <span>Booked</span>
+            </div>
+        </div>
+
+        <div class="seat-container">
+            @for (int row = 1; row <= totalRows; row++)
+            {
+                <div class="seat-row">
+                    <div class="row-label">@((char)(64 + row))</div>
+                    @for (int col = 1; col <= seatsPerRow; col++)
+                    {
+                        int seatNumber = (row - 1) * seatsPerRow + col;
+                        if (seatNumber > totalSeats)
+                        {
+                            break;
+                        }
+
+                        if (col == 7) // Wider aisle in middle (after 6th seat)
+                        {
+                            <div class="aisle"></div>
+                        }
+
+                        string seatClass = "seat";
+                        if (row <= 2) // VIP Seats in first 2 rows
+                        {
+                            seatClass += " vip";
+                        }
+
+                        // Check if the seat is occupied from ViewBag
+                        bool isOccupied = ViewBag.BookedSeats.Contains(seatNumber);
+                        if (isOccupied)
+                        {
+                            seatClass += " occupied";
+                        }
+
+                        <div class="@seatClass" onclick="selectSeat(this)" data-seat="@seatNumber" data-row="@row" data-vip="@(row <= 2 ? "true" : "false")">
+                            @col
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+    </div>
+
+
+    <div class="screen-container">
+        <div class="screen">🎬 SCREEN 🎬</div>
+    </div>
+
+    <div class="summary-container">
+        <h3 class="summary-header">🎟️ Booking Summary</h3>
+        <div class="summary-details">
+            <div class="summary-item">
+                <div class="summary-label">Movie</div>
+                <div class="summary-value">@ViewBag.MovieTitle</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Theater</div>
+                <div class="summary-value">@ViewBag.Theatername</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Show Time</div>
+                <div class="summary-value">@ViewBag.StartTime</div>
+            </div>
+        </div>
+
+        <div class="summary-item">
+            <div class="summary-label">Selected Seats</div>
+            <div class="summary-value" id="selectedSeatsDisplay">None selected</div>
+        </div>
+
+        <div class="price-breakdown">
+            <div class="price-item">
+                <span>Standard Seats (<span id="standardCount">0</span>)</span>
+                <span>₹<span id="standardPrice">0</span></span>
+            </div>
+            <div class="price-item">
+                <span>VIP Seats (<span id="vipCount">0</span>)</span>
+                <span>₹<span id="vipPrice">0</span></span>
+            </div>
+            <div class="total-price">
+                <span>Total Amount</span>
+                <span>₹<span id="totalPrice">0</span></span>
+            </div>
+        </div>
+
+        <button class="book-btn" id="bookButton" onclick="confirmBooking()" disabled>Confirm Booking</button>
+    </div>
+</div>
+<script>
+    // Configuration
+    const basePrice = @(ViewBag.BasePrice ?? 1000);
+    const config = {
+        standardPrice: basePrice,
+        vipPrice: Math.round(basePrice * 1.10),
+        maxSeats: 10
+    };
+
+    // State
+    const state = {
+        selectedSeats: [],
+        occupiedSeats: Array.from(document.querySelectorAll('.seat.occupied')).map(el => el.getAttribute('data-seat'))
+    };
+
+    // DOM Elements
+    const elements = {
+        bookButton: document.getElementById('bookButton'),
+        selectedSeatsDisplay: document.getElementById('selectedSeatsDisplay'),
+        standardCount: document.getElementById('standardCount'),
+        standardPrice: document.getElementById('standardPrice'),
+        vipCount: document.getElementById('vipCount'),
+        vipPrice: document.getElementById('vipPrice'),
+        totalPrice: document.getElementById('totalPrice')
+    };
+
+    // Select Seat
+    function selectSeat(seatElement) {
+        const seatNumber = seatElement.getAttribute('data-seat');
+        const isVip = seatElement.getAttribute('data-vip') === 'true';
+        const isOccupied = seatElement.classList.contains('occupied');
+
+        if (isOccupied) return;
+
+        const index = state.selectedSeats.findIndex(s => s.number === seatNumber);
+
+        if (index !== -1) {
+            state.selectedSeats.splice(index, 1);
+            seatElement.classList.remove('selected');
+        } else {
+            if (state.selectedSeats.length >= config.maxSeats) {
+                alert(`You can select maximum ${config.maxSeats} seats at a time.`);
+                return;
+            }
+
+            state.selectedSeats.push({ number: seatNumber, isVip, element: seatElement });
+            seatElement.classList.add('selected');
+        }
+
+        updateSummary();
+    }
+
+    // Update Summary
+    function updateSummary() {
+        const vipSeats = state.selectedSeats.filter(seat => seat.isVip);
+        const standardSeats = state.selectedSeats.filter(seat => !seat.isVip);
+
+        elements.vipCount.textContent = vipSeats.length;
+        elements.standardCount.textContent = standardSeats.length;
+        elements.vipPrice.textContent = vipSeats.length * config.vipPrice;
+        elements.standardPrice.textContent = standardSeats.length * config.standardPrice;
+
+        const total = (vipSeats.length * config.vipPrice) + (standardSeats.length * config.standardPrice);
+        elements.totalPrice.textContent = total;
+
+        if (state.selectedSeats.length > 0) {
+            elements.selectedSeatsDisplay.textContent = state.selectedSeats.map(s => `${s.number}${s.isVip ? ' (VIP)' : ''}`).join(', ');
+        } else {
+            elements.selectedSeatsDisplay.textContent = 'None selected';
+        }
+
+        elements.bookButton.disabled = state.selectedSeats.length === 0;
+    }
+
+    // Confirm Booking via Form POST
+    function confirmBooking() {
+        const vipSeats = state.selectedSeats.filter(seat => seat.isVip);
+        const standardSeats = state.selectedSeats.filter(seat => !seat.isVip);
+        const vipTotalPrice = vipSeats.length * config.vipPrice;
+        const standardTotalPrice = standardSeats.length * config.standardPrice;
+        const total = vipTotalPrice + standardTotalPrice;
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/User/Movie_Payment";
+
+        // Seats & VIP status
+        state.selectedSeats.forEach(seat => {
+            const seatInput = document.createElement("input");
+            seatInput.type = "hidden";
+            seatInput.name = "selectedSeats";
+            seatInput.value = seat.number;
+            form.appendChild(seatInput);
+
+            const vipInput = document.createElement("input");
+            vipInput.type = "hidden";
+            vipInput.name = "isVip";
+            vipInput.value = seat.isVip;
+            form.appendChild(vipInput);
+        });
+
+        // Add all required parameters
+        const fields = [
+            { name: "totalAmount", value: total },
+            { name: "movieTitle", value: "@ViewBag.MovieTitle" },
+            { name: "theaterName", value: "@ViewBag.Theatername" },
+            { name: "showtimeID", value: "@ViewBag.ShowtimeID" },
+            { name: "startTime", value: "@ViewBag.StartTime" },
+            { name: "standardCount", value: standardSeats.length },
+            { name: "vipCount", value: vipSeats.length },
+            { name: "standardPrice", value: standardTotalPrice },
+            { name: "vipPrice", value: vipTotalPrice },
+            { name: "grandTotal", value: total }
+        ];
+
+        fields.forEach(f => {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = f.name;
+            input.value = f.value;
+            form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    // Keyboard shortcut for deselecting
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            state.selectedSeats.forEach(seat => seat.element.classList.remove('selected'));
+            state.selectedSeats = [];
+            updateSummary();
+        }
+    });
+</script>

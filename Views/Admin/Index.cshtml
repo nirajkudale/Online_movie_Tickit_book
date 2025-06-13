@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Admin_Layout.cshtml"; // Just this, no need for Layout = null
+}
+
+
+
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h1 class="mt-4 fw-bold">Admin Dashboard</h1>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted">Total Movies</h6>
+                            <h3 class="fw-semibold">@ViewBag.Totalmovies</h3>
+                        </div>
+                        <div class="bg-primary text-white rounded-circle p-3">
+                            <i class="fas fa-film"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted">Total Theaters</h6>
+                            <h3 class="fw-semibold">@ViewBag.Totaltheaters</h3>
+                        </div>
+                        <div class="bg-success text-white rounded-circle p-3">
+                            <i class="fas fa-building"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted">Registered Users</h6>
+                            <h3 class="fw-semibold">@ViewBag.TotalUsers</h3>
+                        </div>
+                        <div class="bg-danger text-white rounded-circle p-3">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Ticket Sales Overview</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="dashboardChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('dashboardChart').getContext('2d');
+
+        // Get the booking data from ViewBag
+        var bookingData = @Html.Raw(Json.Encode(ViewBag.BookingData));
+
+        // Prepare labels (month names) and data points
+        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        var labels = [];
+        var dataPoints = [];
+
+        // Fill in the data for the last 6 months
+        for (var i = 5; i >= 0; i--) {
+            var date = new Date();
+            date.setMonth(date.getMonth() - i);
+
+            var month = date.getMonth();
+            var year = date.getFullYear();
+
+            // Find matching data or use 0 if no data for that month
+            var match = bookingData.find(function(item) {
+                return item.Month === month + 1 && item.Year === year;
+            });
+
+            labels.push(monthNames[month] + ' ' + year);
+            dataPoints.push(match ? match.TotalTickets : 0);
+        }
+
+        const dashboardChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Tickets Sold',
+                    data: dataPoints,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#0d6efd'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Tickets'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
